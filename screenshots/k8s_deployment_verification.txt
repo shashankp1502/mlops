@@ -1,0 +1,22 @@
+=== kubectl get nodes ===
+NAME       STATUS   ROLES           AGE    VERSION
+minikube   Ready    control-plane   113s   v1.32.0
+
+=== kubectl get pods -n heart-disease ===
+NAME                                 READY   STATUS    RESTARTS   AGE   IP           NODE       NOMINATED NODE   READINESS GATES
+heart-disease-api-7457b8685f-7tdvd   1/1     Running   0          31s   10.244.0.4   minikube   <none>           <none>
+heart-disease-api-7457b8685f-hg4cg   1/1     Running   0          31s   10.244.0.3   minikube   <none>           <none>
+
+=== kubectl get deploy -n heart-disease ===
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+heart-disease-api   2/2     2            2           31s
+
+=== kubectl get svc -n heart-disease ===
+NAME                TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+heart-disease-api   LoadBalancer   10.98.102.216   <pending>     80:31040/TCP   31s
+
+=== GET /health ===
+{"status":"ok","model_loaded":true,"champion_model":"logistic_regression"}
+
+=== POST /predict ===
+{"prediction":0,"label":"no_disease","confidence":0.7764,"probability_disease":0.2236,"model_version":"model.pkl"}

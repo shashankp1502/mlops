@@ -1,0 +1,49 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+*.egg
+.Python
+build/
+dist/
+
+# --- Virtual env ---
+.venv/
+venv/
+env/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- MLflow ---
+mlruns/
+mlflow.db
+mlartifacts/
+
+# --- Data (keep raw download script, not large raw/processed dumps) ---
+data/raw/*.csv
+data/processed/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# --- Model artifacts (keep final packaged model, ignore scratch dumps) ---
+models/*.pkl
+models/*.joblib
+!models/.gitkeep
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/
+
+# --- Test / coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Env files ---
+.env
+
+# --- Minikube / k8s local state ---
+*.kubeconfig

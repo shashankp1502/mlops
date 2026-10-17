@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.9px Helvetica; color: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.9px Helvetica; color: #01154d}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #000000}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #0b4cb4}
+    span.s1 {color: #000000}
+    span.s2 {font: 12.0px Arial; color: #000000}
+    span.s3 {font: 10.1px Helvetica}
+    span.s4 {font: 10.1px Arial}
+    span.s5 {font: 12.0px Arial}
+  </style>
+</head>
+<body>
+<p class="p1"><b>Machine Learning Operations (MLOps) AIMLCZG523</b></p>
+<p class="p2"><b>Assignment 01</b></p>
+<p class="p1"><b>Total Marks 50</b></p>
+<p class="p3"><b>MLOps Experimental Learning Assignment: </b>End-to-End ML Model Development,</p>
+<p class="p3">CI/CD, and Production Deployment Experimental Learning.</p>
+<p class="p3"><b>Objective: </b>Design, develop, and deploy a scalable, reproducible machine learning</p>
+<p class="p3">solution using modern MLOps best practices. The assignment emphasizes practical</p>
+<p class="p3">automation, experiment tracking, CI/CD pipelines, containerization, cloud deployment,</p>
+<p class="p3">and monitoring, mirroring real-world production scenarios.</p>
+<p class="p3"><b>Dataset: </b>Title: Heart Disease UCI Dataset</p>
+<p class="p4"><span class="s1">•</span><span class="s2"> </span><span class="s1">Source: </span>UCI Machine Learning Repository</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>CSV containing 14+ features (age, sex, blood pressure, cholesterol, etc.) and a</p>
+<p class="p3">binary target (presence/absence of heart disease).</p>
+<p class="p3"><b>Problem Statement:</b> Build a machine learning classifier to predict the risk of heart</p>
+<p class="p3">disease based on patient health data, and deploy the solution as a cloud-ready, monitored</p>
+<p class="p3">API.</p>
+<p class="p3"><b>Assignment Tasks</b></p>
+<p class="p3">1.<span class="s5"> </span><b>Data Acquisition &amp; Exploratory Data Analysis (EDA) [5 marks]</b></p>
+<p class="p3">•<span class="s5"> </span>Obtain the dataset (provide download script or instructions). Clean and</p>
+<p class="p3">preprocess the data (handle missing values, encode features). Perform EDA</p>
+<p class="p3">with professional visualizations (histograms, correlation heatmaps, class</p>
+<p class="p3">balance).</p>
+<p class="p3"><b>2.</b><span class="s5"><b> </b></span><b>Feature Engineering &amp; Model Development [8 marks]</b></p>
+<p class="p3">•<span class="s5"> </span>Prepare final ML features (scaling, encoding). Build and train at least two</p>
+<p class="p3">classification models (e.g., Logistic Regression and Random Forest).</p>
+<p class="p3">Document model selection and tuning process. Evaluate using cross-</p>
+<p class="p3">validation and relevant metrics (accuracy, precision, recall, ROC-AUC).</p>
+<p class="p3"><b>3.</b><span class="s5"><b> </b></span><b>Experiment Tracking [5 marks]</b></p>
+<p class="p3">•<span class="s5"> </span>Integrate MLflow (or similar) for experiment tracking. Log parameters,</p>
+<p class="p3">metrics, artifacts, and plots for all runs.</p>
+<p class="p3"><b>4.</b><span class="s5"><b> </b></span><b>Model Packaging &amp; Reproducibility [7 marks]</b></p>
+<p class="p3">•<span class="s5"> </span>Save the final model in a reusable format (e.g., MLflow, pickle, ONNX).</p>
+<p class="p3">Write a clean requirements.txt (or Conda env file). Provide preprocessing</p>
+<p class="p3">pipeline/transformers to ensure full reproducibility.<span class="s1"></span>5.<span class="s5"> </span><b>CI/CD Pipeline &amp; Automated Testing [8 marks]</b></p>
+<p class="p3">•<span class="s5"> </span>Write unit tests for data processing and model code (Pytest or unit test).</p>
+<p class="p3">Create a GitHub Actions (or Jenkins) pipeline: Linting, unit test, and model</p>
+<p class="p3">training steps. Artifacts/logging for each workflow run.</p>
+<p class="p3">6.<span class="s5"> </span><b>Model Containerization [5 marks</b>]</p>
+<p class="p3">•<span class="s5"> </span>Build a Docker container for the model serving API (Flask or FastAPI</p>
+<p class="p3">recommended). Expose /predict endpoint, accept JSON input, return</p>
+<p class="p3">prediction and confidence. Container must build and run locally with sample</p>
+<p class="p3">input.</p>
+<p class="p3">7.<span class="s5"> </span><b>Production Deployment [7 marks]</b></p>
+<p class="p3">•<span class="s5"> </span>Deploy the Dockerized API to a public cloud or local Kubernetes (GKE,</p>
+<p class="p3">EKS, AKS, or Minikube/Docker Desktop). Use a deployment manifest or</p>
+<p class="p3">Helm chart. Expose via Load Balancer or Ingress. Verify endpoints and</p>
+<p class="p3">provide deployment screenshots.</p>
+<p class="p3">8.<span class="s5"> </span><b>Monitoring &amp; Logging [3 marks]</b></p>
+<p class="p3">•<span class="s5"> </span>Integrate logging of API requests. Demonstrate simple monitoring</p>
+<p class="p3">(Prometheus + Grafana or API metrics/logs dashboard).</p>
+<p class="p3">9.<span class="s5"> </span><b>Documentation &amp; Reporting [2 marks]</b></p>
+<p class="p3">•<span class="s5"> </span>Submit a professional Markdown or PDF report including:</p>
+<p class="p3">•<span class="s5"> </span>Setup/install instructions.</p>
+<p class="p3">•<span class="s5"> </span>EDA and modelling choices.</p>
+<p class="p3">•<span class="s5"> </span>Experiment tracking summary.</p>
+<p class="p3">•<span class="s5"> </span>Architecture diagram.</p>
+<p class="p3">•<span class="s5"> </span>CI/CD and deployment workflow screenshots.</p>
+<p class="p3">•<span class="s5"> </span>Link to code repository.</p>
+<p class="p3"><b>Deliverables</b></p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>GitHub repository with:</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Code, Dockerfile(s), requirements.txt/env.yml</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Cleaned dataset and download script/instructions</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Jupyter notebooks/scripts (EDA, training, inference)</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>test/ folder with unit tests</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>GitHub Actions workflow YAML (or Jenkinsfile)</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Deployment manifests/Helm charts</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Screenshot folder for reporting</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Final written report 10 pages as a doc/docx/pdf file.</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Deployed API URL (if public) or access instructions (for local testing)</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Include a short video recording of the overall pipeline<span class="s1"></span><b>Production-Readiness Requirements</b></p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>All scripts must execute from clean setup using requirements file.</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Model must serve correctly in an isolated environment (Docker container build/test</p>
+<p class="p3">proof required).</p>
+<p class="p3"><span class="s3">•</span><span class="s4"> </span>Pipeline must fail on code or test errors and give clear logs.</p>
+<p class="p3"><b>Academic Integrity Note:</b></p>
+<p class="p3">•<span class="s5"> </span>Students are expected to complete this assignment independently and</p>
+<p class="p3">demonstrate their own understanding of MLOps concepts and implementation</p>
+<p class="p3">practices. While discussions for learning purposes are encouraged, direct copying</p>
+<p class="p3">of code, notebooks, visualizations, feature engineering steps, CI/CD workflows,</p>
+<p class="p3">deployment configurations, or overall project pipelines from other students or</p>
+<p class="p3">online sources is strictly prohibited.</p>
+<p class="p3">•<span class="s5"> </span>Assignments exhibiting highly similar implementations including identical feature</p>
+<p class="p3">selections, EDA visualizations, model pipelines, Docker/Kubernetes</p>
+<p class="p3">configurations, API structures, reports, or GitHub workflows may be treated as</p>
+<p class="p3">copied submissions and will be subject to academic integrity review and grading</p>
+<p class="p3">penalties.</p>
+<p class="p3">•<span class="s5"> </span>Students are encouraged to personalize their approach, experimentation process,</p>
+<p class="p3">architecture decisions, monitoring setup, and documentation to reflect originality</p>
+<p class="p3">and individual effort.</p>
+</body>
+</html>

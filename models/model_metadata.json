@@ -1,0 +1,57 @@
+{
+  "champion_model": "logistic_regression",
+  "trained_at_utc": "2026-10-17T14:48:06.868577+00:00",
+  "feature_columns": [
+    "age",
+    "sex",
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalach",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal"
+  ],
+  "best_params": {
+    "clf__C": 1,
+    "clf__class_weight": "balanced",
+    "clf__penalty": "l2"
+  },
+  "cv_roc_auc_mean": 0.9071484071484072,
+  "test_metrics": {
+    "accuracy": 0.8852459016393442,
+    "precision": 0.8181818181818182,
+    "recall": 0.9642857142857143,
+    "f1": 0.8852459016393442,
+    "roc_auc": 0.958874458874459
+  },
+  "mlflow_run_id": "7df7b2801cb74fd5b1fbe95513ce43fe",
+  "all_candidates": [
+    {
+      "name": "logistic_regression",
+      "test_metrics": {
+        "accuracy": 0.8852459016393442,
+        "precision": 0.8181818181818182,
+        "recall": 0.9642857142857143,
+        "f1": 0.8852459016393442,
+        "roc_auc": 0.958874458874459
+      },
+      "cv_roc_auc_mean": 0.9071484071484072
+    },
+    {
+      "name": "random_forest",
+      "test_metrics": {
+        "accuracy": 0.8852459016393442,
+        "precision": 0.8387096774193549,
+        "recall": 0.9285714285714286,
+        "f1": 0.8813559322033898,
+        "roc_auc": 0.9534632034632036
+      },
+      "cv_roc_auc_mean": 0.8984814702206005
+    }
+  ]
+}

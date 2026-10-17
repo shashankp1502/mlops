@@ -1,0 +1,19 @@
+# LoadBalancer service — on Minikube, run `minikube tunnel` in a separate
+# terminal to get this an external IP, or use `minikube service
+# heart-disease-api -n heart-disease` for a quick NodePort-style URL.
+apiVersion: v1
+kind: Service
+metadata:
+  name: heart-disease-api
+  namespace: heart-disease
+  labels:
+    app: heart-disease-api
+spec:
+  type: LoadBalancer
+  selector:
+    app: heart-disease-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+      protocol: TCP

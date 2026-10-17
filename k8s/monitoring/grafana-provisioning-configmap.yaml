@@ -1,0 +1,103 @@
+# Auto-provisions Grafana with a Prometheus datasource and loads the
+# dashboard JSON below on startup, so there's zero manual click-ops needed
+# after `kubectl apply` — matches the "demonstrate simple monitoring"
+# requirement without requiring screenshots of manually wiring up Grafana.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource
+  namespace: heart-disease
+data:
+  datasource.yml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus.heart-disease.svc.cluster.local:9090
+        isDefault: true
+        editable: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-provider
+  namespace: heart-disease
+data:
+  dashboard-provider.yml: |
+    apiVersion: 1
+    providers:
+      - name: default
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 30
+        options:
+          path: /var/lib/grafana/dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-heart-disease-api
+  namespace: heart-disease
+data:
+  heart-disease-api.json: |
+    {
+      "title": "Heart Disease API - Overview",
+      "uid": "heart-disease-api-overview",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "10s",
+      "time": { "from": "now-30m", "to": "now" },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Request rate by endpoint (req/s)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+          "targets": [
+            {
+              "expr": "sum by (endpoint) (rate(api_requests_total[1m]))",
+              "legendFormat": "{{endpoint}}"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Predictions by label",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+          "targets": [
+            {
+              "expr": "sum by (label) (model_predictions_total)",
+              "legendFormat": "{{label}}"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "P95 request latency (s)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum by (le, endpoint) (rate(api_request_latency_seconds_bucket[5m])))",
+              "legendFormat": "{{endpoint}}"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "HTTP status codes",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+          "targets": [
+            {
+              "expr": "sum by (status_code) (rate(api_requests_total[1m]))",
+              "legendFormat": "{{status_code}}"
+            }
+          ]
+        }
+      ]
+    }
