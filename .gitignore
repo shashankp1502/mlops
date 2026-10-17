@@ -47,3 +47,7 @@ htmlcov/
 
 # --- Minikube / k8s local state ---
 *.kubeconfig
+
+# --- Large media (keep out of git; host pipeline-walkthrough videos elsewhere) ---
+*.mov
+*.mp4

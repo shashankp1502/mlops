@@ -8,16 +8,16 @@
 
 ---
 
-## 1. Objective
+## 1. Introduction
 
-Build a reproducible, production-style pipeline for a binary classifier
-that predicts heart disease risk from patient health data — covering data
-acquisition, EDA, feature engineering, model training with experiment
-tracking, automated testing, CI/CD, containerization, Kubernetes
-deployment, and monitoring.
+This report documents a reproducible, production-style pipeline for a
+binary classifier that predicts heart disease risk from patient health
+data — covering data acquisition, EDA, feature engineering, model
+training with experiment tracking, automated testing, CI/CD,
+containerization, Kubernetes deployment, and monitoring.
 
-Everything described in this report was actually run during development
-(not just written down): the dataset was downloaded live from UCI, both
+Everything described below was actually run during development (not
+just written down): the dataset was downloaded live from UCI, both
 models were trained and logged to MLflow, the full pytest suite was
 executed, the Docker image was built and smoke-tested locally, and the
 whole stack was deployed to a local Minikube cluster with Prometheus and
@@ -26,29 +26,28 @@ are in `screenshots/`.
 
 ---
 
-## 2. Setup / Install Instructions
+## 2. System Architecture
 
-```bash
-git clone https://github.com/shashankp1502/mlops.git
-cd mlops
+The diagram below summarizes the full flow, from the UCI data source
+through EDA, training + MLflow tracking, model packaging, the FastAPI
+serving layer, Docker containerization, and the Minikube deployment with
+Prometheus/Grafana monitoring:
 
-python3.11 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+![Architecture diagram](figures/architecture_diagram.png)
 
-python -m src.data.download_data      # fetches data/raw/heart_disease.csv from UCI
-python -m src.models.train            # trains + logs to MLflow, saves models/model.pkl
-pytest                                 # 40+ tests, ~1s
-uvicorn src.api.main:app --reload      # API on http://localhost:8000
-```
+The authoritative, version-controlled source for this diagram is a
+Mermaid flowchart in `README.md` (renders natively in GitHub's web UI) —
+the PNG above is a matching static rendering for this Word/PDF report.
 
-Full instructions for Docker and Kubernetes are in the project `README.md`;
-they're not repeated verbatim here to keep this report focused on
-*decisions and results* rather than command transcripts.
+The rest of this report walks through each stage of that diagram in
+order: data and EDA, feature engineering, modelling, experiment
+tracking, packaging, testing, CI/CD, containerization, deployment, and
+monitoring — followed by a practical "Getting Started" reference at the
+end.
 
 ---
 
-## 3. Dataset & EDA
+## 3. Dataset & Exploratory Data Analysis
 
 **Dataset:** UCI Cleveland Heart Disease dataset (`processed.cleveland.data`)
 — 303 patients, 13 features (age, sex, chest pain type, resting blood
@@ -104,7 +103,7 @@ figures: `docs/figures/`):
 
 ---
 
-## 4. Feature Engineering & Modelling Choices
+## 4. Feature Engineering
 
 Implemented as a single `sklearn.compose.ColumnTransformer`
 (`src/features/build_features.py`) so the exact transformation used during
@@ -117,6 +116,10 @@ logic in the API layer.
 | Numeric / ordinal | age, trestbps, chol, thalach, oldpeak, ca | median impute -> standard scale |
 | Nominal categorical | cp, restecg, slope, thal | most-frequent impute -> one-hot encode |
 | Already binary | sex, fbs, exang | most-frequent impute (guards future missing values) |
+
+---
+
+## 5. Model Development & Results
 
 **Models trained** (`src/models/train.py`): **Logistic Regression** and
 **Random Forest**, each tuned via `GridSearchCV` with 5-fold **stratified**
@@ -149,8 +152,7 @@ imbalance, no strong non-linear interactions visible in EDA) also tracks
 with what's generally expected — Random Forest's extra flexibility isn't
 needed here and mostly adds variance on a small test set (61 rows).
 
-Confusion matrices and ROC curves for both runs are logged as MLflow
-artifacts (`mlruns/`, viewable via `mlflow ui`):
+Confusion matrices and ROC curves for both runs:
 
 ![Logistic Regression confusion matrix](../screenshots/model_comparision/logistic_regression_confusion_matrix.png)
 
@@ -162,7 +164,7 @@ artifacts (`mlruns/`, viewable via `mlflow ui`):
 
 ---
 
-## 5. Experiment Tracking (MLflow)
+## 6. Experiment Tracking (MLflow)
 
 Every GridSearchCV run is logged as its own MLflow run under the
 `heart-disease-classification` experiment, with:
@@ -177,10 +179,7 @@ Every GridSearchCV run is logged as its own MLflow run under the
   MLflow UI without cross-referencing JSON files
 
 Tracking store: local file-based (`file:./mlruns`), kept out of git
-(regenerable by re-running `train.py`). Run with:
-```bash
-mlflow ui --backend-store-uri file:./mlruns
-```
+(regenerable by re-running `train.py`).
 
 Side-by-side run comparison from the MLflow UI (`logistic_regression`
 vs. `random_forest`, matching the results table above exactly):
@@ -189,7 +188,7 @@ vs. `random_forest`, matching the results table above exactly):
 
 ---
 
-## 6. Model Packaging & Reproducibility
+## 7. Model Packaging & Reproducibility
 
 - The **champion's full pipeline** (preprocessing `ColumnTransformer` +
   fitted classifier) is pickled as a single artifact: `models/model.pkl`
@@ -209,7 +208,7 @@ vs. `random_forest`, matching the results table above exactly):
 
 ---
 
-## 7. Testing & CI/CD
+## 8. Automated Testing
 
 **Unit tests** (`tests/`, 40 tests, pytest): cover data parsing
 (`download_data.parse_cleveland`), preprocessing (`split_features_target`,
@@ -224,8 +223,12 @@ small synthetic fixture dataset (`tests/conftest.py`) stands in for the
 real data, so the suite runs identically on a clean checkout before any
 training has happened.
 
-**CI/CD** (`.github/workflows/ci.yml`), four sequential jobs, each gated
-on the previous one succeeding:
+---
+
+## 9. CI/CD Pipeline
+
+`.github/workflows/ci.yml` runs four sequential jobs, each gated on the
+previous one succeeding:
 
 1. **lint** — `flake8 src tests`
 2. **test** — `pytest` with coverage, JUnit + coverage XML uploaded as artifacts
@@ -247,13 +250,13 @@ All 4 jobs passing on a live run (`main` branch):
 ![GitHub Actions pipeline - all 4 jobs green](../screenshots/02_github_actions_pipeline.png)
 
 The `train` job's own logs, downloading the dataset fresh and showing
-both models' metrics (matches the results table in Section 4 exactly):
+both models' metrics (matches the results table in Section 5 exactly):
 
 ![CI train job logs](../screenshots/Train_track_with_MLflow.png)
 
 ---
 
-## 8. Containerization
+## 10. Containerization
 
 `docker/Dockerfile` — multi-stage build:
 - **Stage 1 (builder):** installs `requirements-api.txt` into a venv
@@ -286,7 +289,7 @@ the Pydantic schemas in `src/api/schemas.py`:
 
 ---
 
-## 9. Production Deployment (Kubernetes / Minikube)
+## 11. Kubernetes Deployment
 
 Deployed to a local Minikube cluster (namespace `heart-disease`):
 
@@ -318,7 +321,7 @@ LoadBalancer service, not just the pod's own loopback.
 
 ---
 
-## 10. Monitoring & Logging
+## 12. Monitoring & Observability
 
 **Request logging:** every API request is logged as a single structured
 line (request id, method, path, status code, latency in ms) via a FastAPI
@@ -348,35 +351,29 @@ Both were verified live against real traffic generated by scripted
 
 ---
 
-## 11. Architecture Diagram
+## 13. Getting Started (Setup & Usage Reference)
 
-Full flow from the UCI data source through EDA, training + MLflow
-tracking, model packaging, the FastAPI serving layer, Docker
-containerization, and the Minikube deployment with Prometheus/Grafana
-monitoring.
+```bash
+git clone https://github.com/shashankp1502/mlops.git
+cd mlops
 
-![Architecture diagram](figures/architecture_diagram.png)
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-The authoritative, version-controlled source for this diagram is a
-Mermaid flowchart in `README.md` (renders natively in GitHub's web UI) —
-the PNG above is a matching static rendering generated from the same
-structure, for the Word/PDF version of this report.
+python -m src.data.download_data      # fetches data/raw/heart_disease.csv from UCI
+python -m src.models.train            # trains + logs to MLflow, saves models/model.pkl
+pytest                                 # 40+ tests, ~1s
+uvicorn src.api.main:app --reload      # API on http://localhost:8000
+```
+
+Full step-by-step instructions for Docker, Kubernetes, and monitoring are
+in the project `README.md`; they're not repeated verbatim here to keep
+this report focused on *decisions and results* rather than command
+transcripts.
 
 ---
 
-## 12. Repository Link
+## 14. Repository Link
 
 https://github.com/shashankp1502/mlops
-
-## 13. A note on originality
-
-This pipeline, its specific feature groupings, hyperparameter grids,
-Dockerfile structure, and the Prometheus/Grafana provisioning approach
-were designed and built independently for this assignment, based on
-patterns I'm familiar with from general MLOps practice rather than copied
-from any other student's submission or a specific online tutorial. Design
-choices (e.g. splitting `requirements-api.txt` from the full dev
-`requirements.txt`, auto-provisioning Grafana dashboards via ConfigMaps
-instead of manual UI setup, structuring tests to avoid any dependency on
-network access or a pre-trained model) reflect my own judgment about what
-"production-ready" should mean for a project at this scale.
