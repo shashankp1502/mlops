@@ -10,47 +10,35 @@ risk from patient health data, built on the
 
 ## Architecture
 
-```
-┌────────────┐     ┌──────────────┐     ┌────────────────┐     ┌─────────────┐
-│  UCI Repo   │ --> │ download_data │ --> │  EDA notebook   │     │             │
-│ (raw CSV)   │     │     .py       │     │ (visualizations)│     │             │
-└────────────┘     └──────┬───────┘     └────────────────┘     │   MLflow    │
-                           │                                     │  Tracking   │
-                           v                                     │  (./mlruns) │
-                  ┌─────────────────┐    runs logged to -------->│             │
-                  │  build_features  │                           └─────────────┘
-                  │ (ColumnTransformer)
-                  └────────┬────────┘
-                           v
-            ┌──────────────────────────┐
-            │  train.py                 │
-            │  - Logistic Regression    │    champion pipeline
-            │  - Random Forest          │ ------------------------> models/model.pkl
-            │  - GridSearchCV + CV      │                           models/model_metadata.json
-            └──────────────────────────┘
-                           │
-                           v
-            ┌──────────────────────────┐
-            │  FastAPI app (src/api)    │
-            │  /predict  /health        │
-            │  /metrics (Prometheus)    │
-            └────────────┬─────────────┘
-                           │ docker build
-                           v
-                 ┌──────────────────┐
-                 │  Docker image     │
-                 │  heart-disease-api│
-                 └─────────┬────────┘
-                           │ kubectl apply
-                           v
-       ┌──────────────────────────────────────────┐
-       │   Minikube (namespace: heart-disease)      │
-       │  ┌────────────┐  ┌────────────┐ ┌────────┐ │
-       │  │ Deployment │  │ Prometheus │ │Grafana │ │
-       │  │ (2 replicas)│->│  (scrapes  │ │(dash-  │ │
-       │  │  + Service  │  │  /metrics) │->│boards) │ │
-       │  └────────────┘  └────────────┘ └────────┘ │
-       └──────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    UCI[("UCI Repo<br/>(raw CSV)")] -->|download_data.py| RAW["data/raw/heart_disease.csv"]
+    RAW --> EDA["EDA notebook<br/>(01_eda.ipynb)"]
+    RAW --> FEAT["build_features.py<br/>(ColumnTransformer:<br/>impute + scale + one-hot)"]
+
+    FEAT --> TRAIN["train.py<br/>Logistic Regression + Random Forest<br/>GridSearchCV + 5-fold stratified CV"]
+    TRAIN -->|params, metrics,<br/>confusion matrix, ROC curve| MLFLOW[("MLflow Tracking<br/>./mlruns")]
+    TRAIN -->|champion pipeline| MODEL["models/model.pkl<br/>models/model_metadata.json"]
+
+    MODEL --> API["FastAPI app (src/api)<br/>/predict · /health · /metrics"]
+    API -->|docker build| IMAGE["Docker image<br/>heart-disease-api"]
+    IMAGE -->|kubectl apply| DEPLOY
+
+    subgraph K8S["Minikube — namespace: heart-disease"]
+        DEPLOY["Deployment<br/>(2 replicas) + LoadBalancer Service"]
+        PROM["Prometheus<br/>(scrapes /metrics)"]
+        GRAF["Grafana<br/>(dashboards)"]
+        DEPLOY -->|scraped by| PROM
+        PROM -->|datasource for| GRAF
+    end
+
+    subgraph CI["GitHub Actions CI/CD"]
+        LINT["Lint<br/>(flake8)"] --> TEST["Unit tests<br/>(pytest)"]
+        TEST --> CITRAIN["Train<br/>(download + train.py)"]
+        CITRAIN --> DOCKER["Build & smoke-test<br/>Docker image"]
+    end
+
+    CI -.triggers on every push/PR.-> IMAGE
 ```
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on every push/PR:
