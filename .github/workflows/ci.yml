@@ -113,7 +113,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: trained-model
-          path: models
+          # the artifact's internal zip structure already contains the
+          # "models/..." prefix (since models/ and mlruns/ share the repo
+          # root as their common ancestor when uploaded) -- downloading to
+          # "." recreates that structure at the repo root instead of
+          # double-nesting it under models/models/...
+          path: .
 
       - name: Build Docker image
         run: docker build -t heart-disease-api:ci -f docker/Dockerfile .
