@@ -6,6 +6,7 @@
 **BITS ID:** 2025AE05689
 **Repository:** https://github.com/shashankp1502/mlops
 **Pipeline walkthrough video (download):** https://github.com/shashankp1502/mlops/raw/main/pipeline-flow-mlops.mp4
+**Pipeline walkthrough video (BITS OneDrive):** https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2025ae05689_wilp_bits-pilani_ac_in/IQDTWCc_qc8NS5lpNAp_yY10ARR9c4fA1eylHrPZScrowF0?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=56tdfT
 
 ---
 
