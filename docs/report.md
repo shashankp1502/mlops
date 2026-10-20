@@ -5,6 +5,7 @@
 **Author:** Shashank Pandey
 **BITS ID:** 2025AE05689
 **Repository:** https://github.com/shashankp1502/mlops
+**Pipeline walkthrough video (download):** https://github.com/shashankp1502/mlops/raw/main/pipeline-flow-mlops.mp4
 
 ---
 
