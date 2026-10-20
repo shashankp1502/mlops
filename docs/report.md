@@ -1,12 +1,15 @@
 # Heart Disease Risk Prediction — End-to-End MLOps Pipeline
 
-**Course:** AIMLCZG523 — Machine Learning Operations (MLOps)
-**Assignment:** 01 — End-to-End ML Model Development, CI/CD, and Production Deployment
-**Author:** Shashank Pandey
-**BITS ID:** 2025AE05689
-**Repository:** https://github.com/shashankp1502/mlops
-**Pipeline walkthrough video (download):** https://github.com/shashankp1502/mlops/raw/main/pipeline-flow-mlops.mp4
-**Pipeline walkthrough video (BITS OneDrive):** https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2025ae05689_wilp_bits-pilani_ac_in/IQDTWCc_qc8NS5lpNAp_yY10ARR9c4fA1eylHrPZScrowF0?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=56tdfT
+| | |
+|---|---|
+| **Course** | AIMLCZG523 — Machine Learning Operations (MLOps) |
+| **Assignment** | 01 — End-to-End ML Model Development, CI/CD, and Production Deployment |
+| **Author** | Shashank Pandey |
+| **BITS ID** | 2025AE05689 |
+| **GitHub Repository** | [github.com/shashankp1502/mlops](https://github.com/shashankp1502/mlops) |
+| **CI/CD Pipeline (Actions)** | [github.com/shashankp1502/mlops/actions](https://github.com/shashankp1502/mlops/actions) |
+| **Pipeline Walkthrough Video — GitHub (LFS)** | [Download (.mp4)](https://github.com/shashankp1502/mlops/raw/main/pipeline-flow-mlops.mp4) |
+| **Pipeline Walkthrough Video — BITS OneDrive** | [View / Download](https://wilpbitspilaniacin0-my.sharepoint.com/:v:/g/personal/2025ae05689_wilp_bits-pilani_ac_in/IQDTWCc_qc8NS5lpNAp_yY10ARR9c4fA1eylHrPZScrowF0?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=56tdfT) |
 
 ---
 
@@ -35,7 +38,7 @@ through EDA, training + MLflow tracking, model packaging, the FastAPI
 serving layer, Docker containerization, and the Minikube deployment with
 Prometheus/Grafana monitoring:
 
-![Architecture diagram](figures/architecture_diagram.png)
+![Architecture diagram](figures/architecture_diagram.png){width=3.5in}
 
 The authoritative, version-controlled source for this diagram is a
 Mermaid flowchart in `README.md` (renders natively in GitHub's web UI) —
@@ -93,15 +96,15 @@ figures: `docs/figures/`):
 | `categorical_vs_target.png` | cp, sex, exang, slope, thal, restecg vs target |
 | `correlation_heatmap.png` | Full feature correlation matrix |
 
-![Target class balance](figures/target_balance.png)
+![Target class balance](figures/target_balance.png){width=4.5in}
 
-![Numeric feature distributions](figures/numeric_histograms.png)
+![Numeric feature distributions](figures/numeric_histograms.png){width=6in}
 
-![Numeric features vs target](figures/numeric_vs_target.png)
+![Numeric features vs target](figures/numeric_vs_target.png){width=6in}
 
-![Categorical features vs target](figures/categorical_vs_target.png)
+![Categorical features vs target](figures/categorical_vs_target.png){width=6in}
 
-![Correlation heatmap](figures/correlation_heatmap.png)
+![Correlation heatmap](figures/correlation_heatmap.png){width=5.5in}
 
 ---
 
@@ -134,10 +137,16 @@ cross-validation, scored on ROC-AUC:
 
 ### Results
 
-| Model | CV ROC-AUC (mean, 5-fold) | Test Accuracy | Test Precision | Test Recall | Test F1 | Test ROC-AUC |
-|---|---|---|---|---|---|---|
-| **Logistic Regression (champion)** | 0.9071 | 0.8852 | 0.8182 | **0.9643** | 0.8852 | **0.9589** |
-| Random Forest | 0.8985 | 0.8852 | **0.8387** | 0.9286 | 0.8814 | 0.9535 |
+| Metric | Logistic Regression (champion) | Random Forest |
+|---|---|---|
+| CV ROC-AUC (5-fold) | 0.9071 | 0.8985 |
+| Test Accuracy | 0.8852 | 0.8852 |
+| Test Precision | 0.8182 | **0.8387** |
+| Test Recall | **0.9643** | 0.9286 |
+| Test F1 | 0.8852 | 0.8814 |
+| Test ROC-AUC | **0.9589** | 0.9535 |
+
+*Champion selected on held-out ROC-AUC. All metrics except CV ROC-AUC (5-fold cross-validation) are measured on the held-out test set.*
 
 Best Logistic Regression hyperparameters: `C=1`, `penalty=l2`,
 `class_weight=balanced`.
@@ -156,13 +165,13 @@ needed here and mostly adds variance on a small test set (61 rows).
 
 Confusion matrices and ROC curves for both runs:
 
-![Logistic Regression confusion matrix](../screenshots/model_comparision/logistic_regression_confusion_matrix.png)
+![Logistic Regression confusion matrix](../screenshots/model_comparision/logistic_regression_confusion_matrix.png){width=6in}
 
-![Logistic Regression ROC curve](../screenshots/model_comparision/logistic_regression_roc_curve.png)
+![Logistic Regression ROC curve](../screenshots/model_comparision/logistic_regression_roc_curve.png){width=6in}
 
-![Random Forest confusion matrix](../screenshots/model_comparision/random_forest_confusion_matrix.png)
+![Random Forest confusion matrix](../screenshots/model_comparision/random_forest_confusion_matrix.png){width=6in}
 
-![Random Forest ROC curve](../screenshots/model_comparision/random_forest_roc_curve.png)
+![Random Forest ROC curve](../screenshots/model_comparision/random_forest_roc_curve.png){width=6in}
 
 ---
 
@@ -186,7 +195,7 @@ Tracking store: local file-based (`file:./mlruns`), kept out of git
 Side-by-side run comparison from the MLflow UI (`logistic_regression`
 vs. `random_forest`, matching the results table above exactly):
 
-![MLflow run comparison](../screenshots/model_comparision/comparision.png)
+![MLflow run comparison](../screenshots/model_comparision/comparision.png){width=6in}
 
 ---
 
@@ -249,18 +258,19 @@ pipeline with a non-zero exit code and a readable log**, satisfying the
 
 All 4 jobs passing on a live run (`main` branch):
 
-![GitHub Actions pipeline - all 4 jobs green](../screenshots/02_github_actions_pipeline.png)
+![GitHub Actions pipeline - all 4 jobs green](../screenshots/02_github_actions_pipeline.png){width=6in}
 
 The `train` job's own logs, downloading the dataset fresh and showing
 both models' metrics (matches the results table in Section 5 exactly):
 
-![CI train job logs](../screenshots/Train_track_with_MLflow.png)
+![CI train job logs](../screenshots/Train_track_with_MLflow.png){width=6in}
 
 ---
 
 ## 10. Containerization
 
 `docker/Dockerfile` — multi-stage build:
+
 - **Stage 1 (builder):** installs `requirements-api.txt` into a venv
   (needs `build-essential` for a couple of wheels)
 - **Stage 2 (runtime):** `python:3.11-slim` + the venv copied over, app
@@ -282,12 +292,12 @@ curl -X POST http://localhost:8000/predict -d '{...}'
 # {"prediction":0,"label":"no_disease","confidence":0.7764,...}
 ```
 
-![docker images / docker ps](../screenshots/01_docker_build_images_ps.png)
+![docker images / docker ps](../screenshots/01_docker_build_images_ps.png){width=6in}
 
 The FastAPI interactive docs (Swagger UI) generated automatically from
 the Pydantic schemas in `src/api/schemas.py`:
 
-![FastAPI Swagger UI](../screenshots/06_fastapi_swagger.png)
+![FastAPI Swagger UI](../screenshots/06_fastapi_swagger.png){width=6in}
 
 ---
 
@@ -316,7 +326,7 @@ $ curl -X POST http://<minikube-service-url>/predict -d '{...}'
 {"prediction":0,"label":"no_disease","confidence":0.7764,"probability_disease":0.2236,"model_version":"model.pkl"}
 ```
 
-![kubectl get pods,svc,deploy -n heart-disease](../screenshots/03_k8s_pods.png)
+![kubectl get pods,svc,deploy -n heart-disease](../screenshots/03_k8s_pods.png){width=6in}
 
 Both replicas came up healthy and served real predictions through the
 LoadBalancer service, not just the pod's own loopback.
@@ -331,11 +341,13 @@ middleware (`src/api/main.py`) — written to stdout so it's captured by
 Docker/`kubectl logs` without any extra agent.
 
 **Metrics:** `prometheus_client` instrumentation exposes `/metrics` with:
+
 - `api_requests_total{endpoint,method,status_code}` — request counts
 - `model_predictions_total{label}` — prediction outcome counts
 - `api_request_latency_seconds{endpoint}` — latency histogram
 
 **Deployed stack** (`k8s/monitoring/`):
+
 - **Prometheus** (`prom/prometheus:v2.54.1`) scrapes the
   `heart-disease-api` Kubernetes Service directly every 10s (static
   target, no operator/CRDs needed for this scale)
@@ -347,9 +359,9 @@ Docker/`kubectl logs` without any extra agent.
 Both were verified live against real traffic generated by scripted
 `/predict` calls against the Minikube deployment:
 
-![Prometheus targets - heart-disease-api UP](../screenshots/05_prometheus_targets.png)
+![Prometheus targets - heart-disease-api UP](../screenshots/05_prometheus_targets.png){width=6in}
 
-![Grafana - Heart Disease API Overview dashboard with live data](../screenshots/04_grafana_dashboard.png)
+![Grafana - Heart Disease API Overview dashboard with live data](../screenshots/04_grafana_dashboard.png){width=6in}
 
 ---
 
@@ -376,6 +388,7 @@ transcripts.
 
 ---
 
-## 14. Repository Link
+## 14. Repository & Resources
 
-https://github.com/shashankp1502/mlops
+See the table at the top of this report for the GitHub repository, CI/CD
+pipeline, and pipeline walkthrough video links.
